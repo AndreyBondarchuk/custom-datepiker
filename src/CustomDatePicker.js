@@ -4,17 +4,16 @@ import {
   eachDayOfInterval,
   endOfMonth,
   format,
-  getDay,
   isEqual,
-  isSameDay,
   isSameMonth,
   isToday,
-  parse,
   endOfWeek,
   startOfWeek,
   parseISO,
-  startOfToday,
   startOfMonth,
+  isAfter,
+  isBefore,
+  isSameDay,
 } from "date-fns";
 import cn from "classnames";
 
@@ -22,16 +21,15 @@ import RightChevron from "./icon/rightChevron";
 import LeftChevron from "./icon/leftChevron";
 
 const CustomDatePicker = () => {
-  let today = startOfToday();
-  let [selectedDay, setSelectedDay] = useState();
-  let [currentMonth, setCurrentMonth] = useState(format(today, "yyyy-MM-dd"));
-  let firstDayCurrentMonth = startOfMonth(parseISO(currentMonth));
+  const emptyArray = [];
+  const today = new Date();
+  const [selectedDay, setSelectedDay] = useState();
+  const [currentMonth, setCurrentMonth] = useState(format(today, "yyyy-MM-dd"));
+  const [rageDay, setRageDay] = useState(emptyArray);
 
+  const firstDayCurrentMonth = startOfMonth(parseISO(currentMonth));
   const firstDayInWeek = startOfWeek(firstDayCurrentMonth);
-
   const lastDayInWeek = endOfWeek(endOfMonth(firstDayCurrentMonth));
-
-  // console.log(parseISO(currentMonth));
 
   const days = eachDayOfInterval({
     start: firstDayInWeek,
@@ -39,12 +37,12 @@ const CustomDatePicker = () => {
   });
 
   const previousMonth = () => {
-    let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
+    const firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
     setCurrentMonth(format(firstDayNextMonth, "yyyy-MM-dd"));
   };
 
   const nextMonth = () => {
-    let firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
+    const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
     setCurrentMonth(format(firstDayNextMonth, "yyyy-MM-dd"));
   };
 
@@ -52,12 +50,44 @@ const CustomDatePicker = () => {
     "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2";
 
   const hoveringState =
-    "border rounded-full p-4 border-blue-700 hover:bg-indigo-300";
+    "border rounded-full p-4 border-primary hover:bg-indigo-300";
+
+  const checkSameMonth = (day) => {
+    return isSameMonth(day, parseISO(currentMonth));
+  };
+
+  const isSelectedDay = (day) => {
+    return isEqual(day, selectedDay);
+  };
+
+  //temporal logic only for demo
+  const resetState = () => {
+    setRageDay([]);
+  };
+  const isTwoDaysInRage = rageDay.length >= 2;
+  const rageDays = (day) => {
+    if (isTwoDaysInRage) {
+      resetState();
+      setRageDay((currentState) => [...currentState, day]);
+    } else {
+      setRageDay((currentState) => [...currentState, day]);
+    }
+  };
+
+  const range = (day) => isAfter(day, rageDay[0]) && isBefore(day, rageDay[1]);
+
+  const sameDayFirst = (day) => {
+    return isSameDay(day, rageDay[0]);
+  };
+
+  const sameDaySecond = (day) => {
+    return isSameDay(day, rageDay[1]);
+  };
 
   return (
-    <div className="rounded shadow border border-gray-200">
-      <div className="bg-gray-200 pt-2">
-        <div className="flex items-center justify-around gap-8">
+    <div className="rounded border border-unscoped shadow-cont">
+      <div className="bg-bcolor pt-2">
+        <div className="flex items-center pt-4 px-4 justify-between">
           <button
             type="button"
             onClick={previousMonth}
@@ -65,7 +95,7 @@ const CustomDatePicker = () => {
           >
             <LeftChevron classNames={centringAbsolute} />
           </button>
-          <p className="text-center text-gray-900">
+          <p className="text-center text-gray-900 font-mono">
             {format(firstDayCurrentMonth, "MMMM yyyy")}
           </p>
           <button
@@ -86,25 +116,54 @@ const CustomDatePicker = () => {
           <div>S</div>
         </div>
       </div>
-      <div className="grid grid-cols-7 mt-2 text-sm text-center">
+      {selectedDay && !isTwoDaysInRage && (
+        <div className="p-4 bg-unscoped text-sm text-center text-choosedate text-main">
+          Choose a start date up to 6 weeks in advance
+        </div>
+      )}
+      <div className="grid grid-cols-7 text-sm text-center">
         {days.map((day) => (
-          <div key={day.toString()} className="relative">
-            {/* {console.log(day, parseISO(currentMonth))} */}
+          <div
+            key={day.toString()}
+            className={cn(
+              "relative px-2 my-[2px] group",
+              range(day) && "bg-hoverb"
+            )}
+          >
             <button
               type="button"
-              onClick={() => setSelectedDay(day)}
+              onClick={() => {
+                rageDays(day);
+                setSelectedDay(day);
+              }}
               className={cn(
-                isEqual(day, selectedDay) &&
-                  "text-white rounded-full bg-blue-800 text-center",
-                !isSameMonth(day, parseISO(currentMonth)) && "text-gray-300",
-                "p-4 border rounded-full border-transparent",
-                isToday(day) && "border !border-gray-500 p-4 rounded-full",
-                "hover:border-blue-700 hover:bg-indigo-300"
+                "p-4 border border-transparent",
+                (isSelectedDay(day) || sameDayFirst(day)) &&
+                  checkSameMonth(day) &&
+                  "text-white rounded-full bg-primary",
+                !checkSameMonth(day) && "text-unscoped",
+                isToday(day) && "border !border-grayborder p-4 rounded-full",
+                !isSelectedDay(day) &&
+                  checkSameMonth(day) &&
+                  !range(day) &&
+                  "hover:border-primary hover:bg-hoverb group-active:bg-primaryactive hover:rounded-full transition-all",
+                range(day) && "bg-hoverb",
+                sameDaySecond(day) && "border-hoverb"
               )}
             >
+              {/* timing logic to demonstrate how the range works */}
+              <div
+                className={cn(
+                  sameDaySecond(day) &&
+                    "shadow-[-30px_0_0_0px_rgba(204,204,255,1)] absolute w-8 h-[34px] top-0 right-[-10px] -z-10",
+                  rageDay[1] &&
+                    sameDayFirst(day) &&
+                    "shadow-[30px_0_0_0px_rgba(204,204,255,1)] absolute w-8 h-[34px] top-0 left-[-10px] -z-10"
+                )}
+              />
               <time
                 dateTime={format(day, "yyyy-MM-dd")}
-                className={centringAbsolute}
+                className={cn(centringAbsolute, "font-mono h-5 w-5")}
               >
                 {format(day, "d")}
               </time>
@@ -112,6 +171,17 @@ const CustomDatePicker = () => {
           </div>
         ))}
       </div>
+      {isTwoDaysInRage && (
+        <button
+          className="p-4 text-primary font-main text-base"
+          onClick={() => {
+            resetState();
+            setSelectedDay(null);
+          }}
+        >
+          Clear
+        </button>
+      )}
     </div>
   );
 };
