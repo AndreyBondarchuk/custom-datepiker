@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/custom-datepiker/static/css/main.4389445b.css",
+    "main.js": "/custom-datepiker/static/js/main.a6706a8e.js",
+    "index.html": "/custom-datepiker/index.html",
+    "main.4389445b.css.map": "/custom-datepiker/static/css/main.4389445b.css.map",
+    "main.a6706a8e.js.map": "/custom-datepiker/static/js/main.a6706a8e.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4389445b.css",
+    "static/js/main.a6706a8e.js"
+  ]
+}
