@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/custom-datepiker/static/css/main.a63af40a.css",
-    "main.js": "/custom-datepiker/static/js/main.d51c7ee8.js",
+    "main.css": "/custom-datepiker/static/css/main.ebe9ad45.css",
+    "main.js": "/custom-datepiker/static/js/main.6ac4dd34.js",
     "index.html": "/custom-datepiker/index.html",
-    "main.a63af40a.css.map": "/custom-datepiker/static/css/main.a63af40a.css.map",
-    "main.d51c7ee8.js.map": "/custom-datepiker/static/js/main.d51c7ee8.js.map"
+    "main.ebe9ad45.css.map": "/custom-datepiker/static/css/main.ebe9ad45.css.map",
+    "main.6ac4dd34.js.map": "/custom-datepiker/static/js/main.6ac4dd34.js.map"
   },
   "entrypoints": [
-    "static/css/main.a63af40a.css",
-    "static/js/main.d51c7ee8.js"
+    "static/css/main.ebe9ad45.css",
+    "static/js/main.6ac4dd34.js"
   ]
 }
