@@ -121,7 +121,7 @@ const CustomDatePicker = () => {
           Choose a start date up to 6 weeks in advance
         </div>
       )}
-      <div className="grid grid-cols-7 text-sm text-center">
+      <div className="grid grid-cols-7 text-sm text-center mt-2">
         {days.map((day) => (
           <div
             key={day.toString()}
