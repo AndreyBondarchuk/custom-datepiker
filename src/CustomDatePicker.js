@@ -85,7 +85,10 @@ const CustomDatePicker = () => {
   };
 
   return (
-    <div className="rounded border border-unscoped shadow-cont">
+    <div
+      className="rounded border border-unscoped shadow-cont"
+      data-testid="datapicker"
+    >
       <div className="bg-bcolor pt-2">
         <div className="flex items-center pt-4 px-4 justify-between">
           <button
