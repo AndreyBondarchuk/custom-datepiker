@@ -182,7 +182,7 @@ const CustomDatePicker = () => {
             setSelectedDay(null);
           }}
         >
-          Clear
+          clear
         </button>
       )}
     </div>
